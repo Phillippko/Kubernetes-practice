@@ -1,0 +1,60 @@
+buildscript {   //
+    repositories {
+        mavenCentral()
+    }
+    dependencies{
+        classpath('se.transmode.gradle:gradle-docker:1.2') //
+    }
+}
+
+plugins {
+    id 'org.springframework.boot' version '2.4.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'phillippko'
+sourceCompatibility = '11'
+
+apply plugin: 'docker' //
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+
+setVersion("0.0.3")
+
+setArchivesBaseName("movie")
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "org.projectlombok:lombok"
+    testAnnotationProcessor("org.projectlombok:lombok")
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task buildDocker(type: Docker, dependsOn: build) { //
+    push = true
+    applicationName = getArchivesBaseName()
+    dockerfile = file('src/main/docker/DockerFile')
+    doFirst {
+        copy
+                {
+                    from jar
+                    into stageDir
+                }
+    }
+}

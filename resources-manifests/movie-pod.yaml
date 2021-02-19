@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: movie
+  labels:
+    app: movie
+spec:
+  containers:
+    - image: phillippko/movie
+      name: movie
+      ports:
+        - containerPort: 9000

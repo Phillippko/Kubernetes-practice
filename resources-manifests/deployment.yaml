@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movie
+spec:
+  selector:
+    matchLabels:
+      app: movie
+  replicas: 2
+  minReadySeconds: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: movie
+    spec:
+      containers:
+        - image: phillippko/movie:0.0.3
+          imagePullPolicy: Always
+          name: movie
+          ports:
+            - containerPort: 9000
+
